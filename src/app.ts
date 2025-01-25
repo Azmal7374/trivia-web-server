@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
+import router from './app/routes';
 
 const app: Application = express();
 
@@ -8,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 app.use(cors({ origin:'http://localhost:5173', credentials: true}));
 // application routes
-// app.use('/api', router);
+app.use('/api', router);
 
 app.use(globalErrorHandler);
 
