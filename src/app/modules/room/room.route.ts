@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post("/create", roomController.createRoom);
 router.post("/join", roomController.joinRoom);
-router.get("/all-room", roomController.getAllRooms);
+router.get('/:roomCode', roomController.getRoomByCode); 
+router.get("/", roomController.getAllRooms);
 export const RoomRoutes = router;

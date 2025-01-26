@@ -1,19 +1,44 @@
-import mongoose, { Schema } from "mongoose";
-import { Room } from "./room.interface";
+import mongoose, { Schema, Document } from "mongoose";
+
+// Question Interface for questions inside Room model
+export interface Question {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+}
+
+// Room Interface for the Room model
+export interface Room extends Document {
+  roomCode: string;
+  users: { username: string }[]; // Array of users in the room
+  quizCategories: string[]; // Array of selected quiz categories
+  questions: Question[]; // Questions inside the room
+  timer: number; // Timer value
+  createdAt: Date; // Room creation date
+  qrCode: string; // QR code (Base64 string)
+}
 
 const roomSchema = new Schema<Room>({
-  roomCode: { type: String, required: true, unique: true },
-  users: [{ username: { type: String, required: true } }],
-  quizCategories: [{ type: String, required: true }], // Category names
-  questions: [
+  roomCode: { type: String, required: true, unique: true }, // Unique Room Code
+  users: [
     {
-      question: { type: String, required: true },
-      options: [{ type: String, required: true }],
-      correctAnswer: { type: String, required: true },
+      username: { type: String, required: true }, // Username of users in the room
     },
   ],
-  timer: { type: Number, required: true },
-  createdAt: { type: Date, default: Date.now },
+  quizCategories: [{ type: String, required: true }], // Selected quiz categories
+  questions: [
+    {
+      question: { type: String, required: true }, // Question text
+      options: [{ type: String, required: true }], // Options for the question
+      correctAnswer: { type: String, required: true }, // Correct answer
+    },
+  ],
+  timer: { type: Number, required: true }, // Timer for the room
+  qrCode: { type: String, required: true }, // QR Code for the room
+  createdAt: { type: Date, default: Date.now }, // Created at timestamp
 });
 
-export default mongoose.model<Room>("Room", roomSchema);
+// Create Room Model
+const roomModel = mongoose.model<Room>("Room", roomSchema);
+
+export default roomModel;

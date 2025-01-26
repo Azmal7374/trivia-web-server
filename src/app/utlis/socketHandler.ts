@@ -1,66 +1,39 @@
-/* eslint-disable no-console */
-import { Server, Socket } from "socket.io";
-import roomModel from "../modules/room/room.model";
+import { Server } from "socket.io";
 
-const activeRooms: Record<string, Set<string>> = {};
+export default function socketHandler(io: Server) {
+  io.on("connection", (socket) => {
+    console.log("User connected:", socket.id);
 
-const socketHandler = (io: Server) => {
-  io.on("connection", (socket: Socket) => {
-    console.log("New client connected:", socket.id);
+    // Handle user joining a room
+    socket.on("joinRoom", ({ roomCode, userName }) => {
+      socket.join(roomCode);   
+      // Broadcast to the room that a user has joined
+      io.to(roomCode).emit("userJoined", { userName, action: "joined" });
+      console.log(`${userName} joined room ${roomCode}`);
+    });
 
-    // User joins a room
-    socket.on("joinRoom", async ({ roomCode, username }) => {
-      try {
-        // Check if the room exists
-        const room = await roomModel.findOne({ roomCode });
-        if (!room) {
-          socket.emit("error", { message: "Room does not exist!" });
-          return;
-        }
-
-        // Add user to the room
-        if (!activeRooms[roomCode]) {
-          activeRooms[roomCode] = new Set();
-        }
-        activeRooms[roomCode].add(username);
-
-        socket.join(roomCode);
-
-        // Notify other users
-        io.to(roomCode).emit("userJoined", {
-          username,
-          users: Array.from(activeRooms[roomCode]),
-        });
-
-        console.log(`${username} joined room ${roomCode}`);
-      } catch (error) {
-        if (error instanceof Error) {
-          socket.emit("error", { message: error.message });
-        } else {
-          socket.emit("error", { message: "An unknown error occurred." });
-        }
+    // Handle sending and receiving chat messages
+    socket.on("chatMessage", ({ roomId, user, text }) => {
+      if (!user || !text) {
+        console.log("Error: Missing user or text in message.");
+        return;
       }
+
+      // Emit message to everyone in the room
+      io.to(roomId).emit("newMessage", { user, text });
+      console.log(`${user} in ${roomId}: ${text}`);
     });
 
-    // Handle sending messages
-    socket.on("sendMessage", ({ roomCode, username, message }) => {
-      const payload = { username, message, timestamp: new Date() };
-      io.to(roomCode).emit("receiveMessage", payload);
-      console.log(`Message from ${username} in room ${roomCode}: ${message}`);
+    // Handle user leaving a room
+    socket.on("leaveRoom", ({ roomCode, userName }) => {
+      socket.leave(roomCode);
+      io.to(roomCode).emit("userLeft", { userName, action: "left" });
+      console.log(`${userName} left room ${roomCode}`);
     });
 
-    // User disconnects
+    // Handle disconnection
     socket.on("disconnect", () => {
-      console.log("Client disconnected:", socket.id);
-      for (const [roomCode, users] of Object.entries(activeRooms)) {
-        if (users.has(socket.id)) {
-          users.delete(socket.id);
-          io.to(roomCode).emit("userLeft", { username: socket.id });
-          console.log(`User ${socket.id} left room ${roomCode}`);
-        }
-      }
+      console.log("User disconnected:", socket.id);
     });
   });
-};
-
-export default socketHandler;
+}
