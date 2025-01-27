@@ -6,7 +6,8 @@ export default function socketHandler(io: Server) {
 
     // Handle user joining a room
     socket.on("joinRoom", ({ roomCode, userName }) => {
-      socket.join(roomCode);   
+      socket.join(roomCode);
+
       // Broadcast to the room that a user has joined
       io.to(roomCode).emit("userJoined", { userName, action: "joined" });
       console.log(`${userName} joined room ${roomCode}`);

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { RoomRoutes } from '../modules/room/room.route';
 import { CategoryRoutes } from '../modules/category/category.route';
+import { LobbyRoutes } from '../modules/lobby/lobby.routes';
 
 const router = Router();
 
@@ -13,6 +14,10 @@ const moduleRoutes = [
   {
     path: '/categories',
     route: CategoryRoutes,
+  },
+  {
+    path: '/lobby',
+    route: LobbyRoutes,
   },
 ];
 
