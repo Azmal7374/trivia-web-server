@@ -1,10 +1,10 @@
-import express from "express";
-import categoryService from "./category.service";
+import express from 'express';
+import categoryService from './category.service';
 
 const router = express.Router();
 
 // Add new category
-router.post("/add", async (req, res) => {
+router.post('/add', async (req, res) => {
   try {
     const { name, questions } = req.body;
     const category = await categoryService.createCategory(name, questions);
@@ -13,13 +13,13 @@ router.post("/add", async (req, res) => {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });
     } else {
-      res.status(400).json({ error: "An unknown error occurred" });
+      res.status(400).json({ error: 'An unknown error occurred' });
     }
   }
 });
 
 // Get all categories
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const categories = await categoryService.getCategories();
     res.status(200).json(categories);
@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });
     } else {
-      res.status(400).json({ error: "An unknown error occurred" });
+      res.status(400).json({ error: 'An unknown error occurred' });
     }
   }
 });

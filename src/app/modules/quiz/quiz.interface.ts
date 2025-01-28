@@ -1,9 +1,28 @@
-export interface Quiz {
-    _id?: string; // Make _id optional since it will be assigned by MongoDB later
-    name: string;
-    roomCode: string;
-    selectedQuizzes: string[];
-    timer: number;
-    createdAt?: Date;
-  }
-  
+import { Document} from 'mongoose';
+
+interface User {
+  username: string;
+  answers: string[];
+}
+
+interface Question {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  timeLimit: number;
+}
+
+export interface QuizRoom extends Document {
+  leader: string;
+  quizStarted: boolean;
+  currentQuestionIndex: number;
+  timeLeft: number;
+  users: User[];
+  questions: Question[];
+  roomCode: string; // Add missing properties
+  quizCategories: string[]; // Add missing properties
+  timer: number; // Add missing properties
+  createdAt: Date; // Add missing properties
+  qrCodets: string; // Add missing properties
+}
+

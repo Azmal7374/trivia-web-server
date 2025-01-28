@@ -1,8 +1,11 @@
-import categoryModel from "./category.model";
+import categoryModel from './category.model';
 
 class CategoryService {
   // Add new category
-  async createCategory(name: string, questions: { question: string; options: string[]; correctAnswer: string }[]) {
+  async createCategory(
+    name: string,
+    questions: { question: string; options: string[]; correctAnswer: string }[],
+  ) {
     return await categoryModel.create({ name, questions });
   }
 

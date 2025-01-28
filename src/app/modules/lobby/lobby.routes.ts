@@ -1,5 +1,10 @@
 import express from 'express';
-import { addPlayerToLobby, createLobby, createPlayer, createQuiz } from './lobby.controller';
+import {
+  addPlayerToLobby,
+  createLobby,
+  createPlayer,
+  createQuiz,
+} from './lobby.controller';
 
 const router = express.Router();
 

@@ -38,7 +38,10 @@ export const createQuiz = (req: Request, res: Response) => {
 export const createLobby = (req: Request, res: Response) => {
   try {
     const parsedData = lobbySchema.parse(req.body);
-    const newLobby = TriviaService.createLobby(parsedData.quizId, parsedData.leaderId);
+    const newLobby = TriviaService.createLobby(
+      parsedData.quizId,
+      parsedData.leaderId,
+    );
     res.status(201).json(newLobby);
   } catch (error: unknown) {
     if (error instanceof Error) {

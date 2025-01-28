@@ -1,10 +1,8 @@
-import express from "express";
-import quizController from "./quiz.controller";
-import { asyncHandler } from "../../errors/asyncHandler";
+import express from 'express';
+import { startQuizController } from './quiz.controller';
 
 const router = express.Router();
 
-router.post("/create", asyncHandler(quizController.createQuiz));
-router.get("/:roomCode", asyncHandler(quizController.getQuizByRoomCode));
+router.post('/startQuiz', startQuizController);
 
-export default router;
+export const StartQuiz = router;

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface Question {
   question: string;
@@ -22,4 +22,4 @@ const categorySchema = new Schema<Category>({
   questions: [questionSchema],
 });
 
-export default mongoose.model<Category>("Category", categorySchema);
+export default mongoose.model<Category>('Category', categorySchema);

@@ -1,21 +1,40 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { Quiz } from "./quiz.interface";
+import { model, Schema } from "mongoose";
+import { QuizRoom } from "./quiz.interface";
 
-// Define the Mongoose schema for Quiz
-const quizSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    roomCode: { type: String, required: true, unique: true },
-    selectedQuizzes: { type: [String], required: true },
-    timer: { type: Number, required: true },
-    createdAt: { type: Date, default: Date.now }, // Automatically set createdAt if not provided
+const QuizSchema = new Schema<QuizRoom>({
+  leader: {
+    type: String,
+    required: true,
   },
-  {
-    timestamps: true, // Optional: This will automatically add createdAt and updatedAt
-  }
-);
+  quizStarted: {
+    type: Boolean,
+    default: false,
+  },
+  currentQuestionIndex: {
+    type: Number,
+    default: 0,
+  },
+  timeLeft: {
+    type: Number,
+    default: 0,
+  },
+  users: [{
+    username: { type: String, required: true },
+    answers: { type: [String], default: [] },
+  }],
+  questions: [{
+    question: { type: String, required: true },
+    options: { type: [String], required: true },
+    correctAnswer: { type: String, required: true },
+    timeLimit: { type: Number, required: true },
+  }],
+  roomCode: { type: String, required: true },
+  quizCategories: [{ type: String, required: true }],
+  timer: { type: Number, required: true },
+  createdAt: { type: Date, default: Date.now },
+  qrCodets: { type: String, required: true },
+});
 
-// Create the Mongoose model
-const QuizModel = mongoose.model<Quiz & Document>("Quiz", quizSchema);
+const QuizModel = model<QuizRoom>('QuizRoom', QuizSchema);
 
 export default QuizModel;
